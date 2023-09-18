@@ -1,0 +1,10 @@
+{
+    "kty": "EC",
+    "d": "AG0hvBzEx8PjrkBCYDOAZXYqpYmADwtU-a8hDmDCpdD7uk2wtGmnLpVABTaJ7ZSGRd_K7ogfukoAfiOyZ3G3fQUl",
+    "use": "enc",
+    "crv": "P-521",
+    "kid": "8EaICz5te4sJVnQQ1hkSlwKowj7WdfkdJPf_PFUe7bI",
+    "x": "AS-UK1GemaJj8oqTtzBfdtpWRlQMb4fBex8b1ZQ-dRBYHBN9rooAMqWg3kZ1pepgdvoaHiiCuYLFxIUr5eYK8xDX",
+    "y": "AFXwgsIw43winfWwnKBY8CiNzG2LK_6EbtrmKUkBYVXswWWxdr0mUGsHkk3irCGsJMbhKOyNg7Qy4toKLSYGQNBV",
+    "alg": "ECDH-ES+A256KW"
+  }
