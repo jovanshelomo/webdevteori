@@ -1,28 +1,39 @@
 // run with "bun index.js"
 
 import JOSE from "node-jose";
-import crypto from "crypto";
-import fetch from "node-fetch";
-import fs from "fs";
+import { fetch, CookieJar } from "node-fetch-cookies";
 
-// get jwks from server
-const getJWKSFromServer = () =>
-  fetch("http://localhost:8091/auth/jwks.json")
-    .then((res) => res.json())
-    .then((jwks) => {
-      return JOSE.JWK.asKey(jwks.keys[0]);
-    });
+const cookieJar = new CookieJar();
 
 const createClientJWKS = async () => {
   const key = await JOSE.JWK.createKeyStore().generate("EC", "P-256");
   return key;
 };
 
+// get jwks from server
+const getJWKSFromServer = () =>
+  // generate single use JWK public key
+  createClientJWKS().then((clientJWKS) =>
+    fetch(cookieJar, "http://localhost:8091/auth/jwk", {
+      headers: {
+        Authorization: `Basic U1lTVEVNOlNZU0FETQ==`,
+      },
+      method: "POST",
+      body: JSON.stringify(clientJWKS.toJSON()),
+    }).then((res) => res.text())
+      .then((JWK) =>
+        JOSE.JWE.createDecrypt(clientJWKS).decrypt(JWK)
+      ).then((result) =>
+        JOSE.JWK.asKey(
+          JSON.parse(result.plaintext.toString()).key)
+      )
+  )
+
 const requestDataFromServer = async (
   clientJWKS,
   encryptedClientJWKSPublicKey
 ) => {
-  return fetch("http://localhost:8091/sample/encrypted-content", {
+  return fetch(cookieJar, "http://localhost:8091/sample/encrypted-content", {
     headers: {
       Authorization: `Basic U1lTVEVNOlNZU0FETQ==`,
       "Content-Type": "*/*",
